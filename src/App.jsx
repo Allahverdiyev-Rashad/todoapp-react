@@ -1,35 +1,54 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState, useEffect, useRef } from 'react';
+import TodoList from './components/TodoList';
+import { useTodoLayerValue } from './context/TodoContext';
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+    const [{ todos }, dispatch] = useTodoLayerValue();
+    const [content, setContent] = useState('');
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    const inputRef = useRef(null);
 
-export default App
+    useEffect(() => {
+        inputRef.current.focus();
+    }, []);
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+
+        if (content) {
+            const newTodo = {
+                id: Math.floor(Math.random() * 39399393),
+                content,
+                isCompleted: false,
+            };
+
+            dispatch({
+                type: 'ADD_TODO',
+                payload: newTodo,
+            });
+
+            setContent('');
+        }
+    };
+
+    return (
+        <div className="container">
+            <form onSubmit={handleSubmit} className="todo-form">
+                <input
+                    type="text"
+                    value={content}
+                    className="todo-input"
+                    placeholder="What do you want to do?"
+                    ref={inputRef}
+                    onChange={(event) => setContent(event.target.value)}
+                />
+
+                <button className="todo-button">ADD</button>
+            </form>
+            <TodoList todos={todos} />
+        </div>
+    );
+};
+
+export default App;
