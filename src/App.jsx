@@ -1,40 +1,54 @@
-import React, {useContext, useState} from 'react'
-import {useTodoLayerValue} from "./context/TodoContext.jsx";
-import TodoList from "./components/TodoList.jsx";
+import React, { useState, useEffect, useRef } from 'react';
+import TodoList from './components/TodoList';
+import { useTodoLayerValue } from './context/TodoContext';
+import './App.css';
 
 const App = () => {
-    const [{todos}, dispatch] = useTodoLayerValue();
-    const [content, setContent] = useState("");
+    const [{ todos }, dispatch] = useTodoLayerValue();
+    const [content, setContent] = useState('');
+
+    const inputRef = useRef(null);
+
+    useEffect(() => {
+        inputRef.current.focus();
+    }, []);
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if (!content) return;
-        const newTodo = {
-            id: Math.floor(Math.random() * 123213),
-            content,
-            isCompleted: false
-        };
 
-        dispatch({
-            type: "ADD_TODO",
-            payload: newTodo,
-        });
+        if (content) {
+            const newTodo = {
+                id: Math.floor(Math.random() * 39399393),
+                content,
+                isCompleted: false,
+            };
 
-        setContent(" ");
+            dispatch({
+                type: 'ADD_TODO',
+                payload: newTodo,
+            });
+
+            setContent('');
+        }
     };
+
     return (
         <div className="container">
             <form onSubmit={handleSubmit} className="todo-form">
-                <input type="text" className="todo-input" onChange={event => setContent(event.target.value)}
-                       value={content}/>
-                <button className="todo-button">
-                    ADD
-                </button>
-            </form>
-            <TodoList todos={todos}>
+                <input
+                    type="text"
+                    value={content}
+                    className="todo-input"
+                    placeholder="What do you want to do?"
+                    ref={inputRef}
+                    onChange={(event) => setContent(event.target.value)}
+                />
 
-            </TodoList>
+                <button className="todo-button">ADD</button>
+            </form>
+            <TodoList todos={todos} />
         </div>
     );
 };
-export default App
+
+export default App;

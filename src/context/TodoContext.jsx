@@ -1,8 +1,8 @@
-import React, {createContext, useContext, useReducer} from "react";
+import React, { createContext, useContext, useReducer } from 'react';
 
 export const TodoLayerContext = createContext();
 
-export const TodoLayer = ({initialState, reducer, children}) => (
+export const TodoLayer = ({ initialState, reducer, children }) => (
     <TodoLayerContext.Provider value={useReducer(reducer, initialState)}>
         {children}
     </TodoLayerContext.Provider>
