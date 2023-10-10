@@ -1,35 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, {useContext, useState} from 'react'
+import {useTodoLayerValue} from "./context/TodoContext.jsx";
+import TodoList from "./components/TodoList.jsx";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+    const [{todos}, dispatch] = useTodoLayerValue();
+    const [content, setContent] = useState("");
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        if (!content) return;
+        const newTodo = {
+            id: Math.floor(Math.random() * 123213),
+            content,
+            isCompleted: false
+        };
 
+        dispatch({
+            type: "ADD_TODO",
+            payload: newTodo,
+        });
+
+        setContent(" ");
+    };
+    return (
+        <div className="container">
+            <form onSubmit={handleSubmit} className="todo-form">
+                <input type="text" className="todo-input" onChange={event => setContent(event.target.value)}
+                       value={content}/>
+                <button className="todo-button">
+                    ADD
+                </button>
+            </form>
+            <TodoList todos={todos}>
+
+            </TodoList>
+        </div>
+    );
+};
 export default App
